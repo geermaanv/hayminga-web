@@ -282,7 +282,7 @@ function poblarProvincias() {
 function poblarPeriodos() {
   var periodos = [];
   todosLosEventos.forEach(function(ev) {
-    var p = ev['periodo'];
+    var p = ev['Periodo'];
     if (p && p !== 'null' && p !== '' && periodos.indexOf(p) === -1) periodos.push(p);
   });
   periodos.sort();
@@ -313,7 +313,7 @@ function aplicarFiltros() {
     if (busq) {
       var txt = [ev['Nombre'],ev['Descripción'],ev['Organizador'],ev['Dirección'],ev['Provincia'],ev['Tipo_Evento']].join(' ').toLowerCase();
       if (txt.indexOf(busq) === -1) return false;
-      if (periodo && ev['periodo'] !== periodo) return false;
+      if (periodo && ev['Periodo'] !== periodo) return false;
       if (!mostrarPasados && ev['Fecha_Inicio']) {
         var partes = String(ev['Fecha_Inicio']).split('/');
         if (partes.length === 3) {
