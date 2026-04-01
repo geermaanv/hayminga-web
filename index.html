@@ -294,7 +294,6 @@ function poblarPeriodos() {
   });
 }
 
-  
 function aplicarFiltros() {
   var busq = document.getElementById('busqueda').value.toLowerCase().trim();
   var tipo = document.getElementById('filtro-tipo').value;
@@ -313,14 +312,14 @@ function aplicarFiltros() {
     if (busq) {
       var txt = [ev['Nombre'],ev['Descripción'],ev['Organizador'],ev['Dirección'],ev['Provincia'],ev['Tipo_Evento']].join(' ').toLowerCase();
       if (txt.indexOf(busq) === -1) return false;
-      if (periodo && ev['Periodo'] !== periodo) return false;
-      if (!mostrarPasados && ev['Fecha_Inicio']) {
-        var partes = String(ev['Fecha_Inicio']).split('/');
-        if (partes.length === 3) {
-          var fechaEv = new Date(Number(partes[2]), Number(partes[1])-1, Number(partes[0]));
-          if (fechaEv < new Date()) return false;
-  }
-}
+    }
+    if (periodo && ev['Periodo'] !== periodo) return false;
+    if (!mostrarPasados && ev['Fecha_Inicio']) {
+      var partes = String(ev['Fecha_Inicio']).split('/');
+      if (partes.length === 3) {
+        var fechaEv = new Date(Number(partes[2]), Number(partes[1])-1, Number(partes[0]));
+        if (fechaEv < new Date()) return false;
+      }
     }
     return true;
   });
