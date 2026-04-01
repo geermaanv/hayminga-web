@@ -22,7 +22,7 @@ nav{display:flex;align-items:center;gap:20px;}
 .nav-btn:hover{background:var(--tierra-oscuro);}
 .subheader{background:var(--fondo);padding:0.45rem 1.5rem;border-bottom:1px solid var(--paja-oscuro);position:sticky;top:52px;z-index:95;}
 .subheader p{font-family:'Fraunces',serif;font-size:0.82rem;font-weight:300;color:var(--barro);font-style:italic;text-align:center;}
-.filtros-container{background:var(--blanco);border-bottom:1px solid var(--paja-oscuro);padding:0.85rem 1.5rem;position:sticky;top:83px;z-index:90;box-shadow:0 2px 8px var(--sombra);}
+.filtros-container{background:var(--blanco);border-bottom:1px solid var(--paja-oscuro);padding:0.85rem 1.5rem;position:sticky;top:52px;z-index:90;box-shadow:0 2px 8px var(--sombra);}
 .filtros-row{display:flex;gap:0.6rem;flex-wrap:wrap;max-width:1100px;margin:0 auto;align-items:center;}
 .search-wrap{flex:1;min-width:180px;position:relative;}
 .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:0.4;}
@@ -117,15 +117,11 @@ footer a{color:var(--tierra);text-decoration:none;}
   </nav>
 </header>
 
-<div class="subheader">
-  <p>Encontrá tu próxima minga · talleres, cursos y eventos de bioconstrucción en Argentina y la región</p>
-</div>
-
 <div class="filtros-container">
   <div class="filtros-row">
     <div class="search-wrap">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="busqueda" placeholder="Buscar eventos..." autocomplete="off">
+      <input type="text" id="busqueda" placeholder="Encontrá tu próxima minga..." autocomplete="off">
     </div>
     <select id="filtro-tipo">
       <option value="">Todos los tipos</option>
