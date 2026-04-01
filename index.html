@@ -285,7 +285,7 @@ function poblarPeriodos() {
     var p = ev['Periodo'];
     if (p && p !== 'null' && p !== '' && periodos.indexOf(p) === -1) periodos.push(p);
   });
-  periodos.sort();
+  periodos.sort().reverse();
   var sel = document.getElementById('filtro-periodo');
   periodos.forEach(function(p) {
     var opt = document.createElement('option');
