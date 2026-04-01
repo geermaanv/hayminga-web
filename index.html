@@ -602,10 +602,15 @@ let filtrados = [];
   async function cargarDatos() {
   try {
     const resp = await fetch(API_URL);
+    console.log('Status:', resp.status);
     const text = await resp.text();
+    console.log('Text preview:', text.substring(0, 100));
     const json = JSON.parse(text.substring(47, text.length - 2));
     const rows = json.table.rows;
-
+    const headers = rows[0].c.map(c => c ? c.v : '');
+    console.log('Headers:', headers);
+    console.log('Rows count:', rows.length);
+    
     // La primera fila es el header
     const headers = rows[0].c.map(c => c ? c.v : '');
 
@@ -625,13 +630,9 @@ let filtrados = [];
     filtrados = [...todos];
     renderGrilla();
   } catch (e) {
-    console.error(e);
-    document.getElementById('grilla').innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">🌱</div>
-        <h3>No se pudieron cargar los eventos</h3>
-        <p>Intentá recargar la página</p>
-      </div>`;
+    console.error('Error:', e);
+    console.log('URL:', API_URL);
+    document.getElementById('grilla').innerHTML = `...`;
   }
 }
 
