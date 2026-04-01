@@ -138,6 +138,11 @@ footer a{color:var(--tierra);text-decoration:none;}
       <option value="true">Solo virtual</option>
     </select>
     <button class="btn-limpiar" onclick="limpiarFiltros()">Limpiar</button>
+    <select id="filtro-periodo"><option value="">Todos los períodos</option></select>
+    <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.83rem;color:var(--texto-suave);cursor:pointer;white-space:nowrap;">
+      <input type="checkbox" id="mostrar-pasados" style="cursor:pointer;">
+      Ver pasados
+    </label>
   </div>
 </div>
 
@@ -248,6 +253,7 @@ function cargarDatos() {
         })
         .filter(function(ev) { return ev['Activo'] === 'true' || ev['Activo'] === true; });
       poblarProvincias();
+      poblarPeriodos();
       eventosFiltrados = todosLosEventos.slice();
       renderGrilla();
     })
@@ -273,11 +279,29 @@ function poblarProvincias() {
   });
 }
 
+function poblarPeriodos() {
+  var periodos = [];
+  todosLosEventos.forEach(function(ev) {
+    var p = ev['periodo'];
+    if (p && p !== 'null' && p !== '' && periodos.indexOf(p) === -1) periodos.push(p);
+  });
+  periodos.sort();
+  var sel = document.getElementById('filtro-periodo');
+  periodos.forEach(function(p) {
+    var opt = document.createElement('option');
+    opt.value = p; opt.textContent = p;
+    sel.appendChild(opt);
+  });
+}
+
+  
 function aplicarFiltros() {
   var busq = document.getElementById('busqueda').value.toLowerCase().trim();
   var tipo = document.getElementById('filtro-tipo').value;
   var prov = document.getElementById('filtro-provincia').value;
   var modal = document.getElementById('filtro-modalidad').value;
+  var periodo = document.getElementById('filtro-periodo').value;
+  var mostrarPasados = document.getElementById('mostrar-pasados').checked;
   eventosFiltrados = todosLosEventos.filter(function(ev) {
     if (tipo && ev['Tipo_Evento'] !== tipo) return false;
     if (prov && ev['Provincia'] !== prov) return false;
@@ -289,6 +313,14 @@ function aplicarFiltros() {
     if (busq) {
       var txt = [ev['Nombre'],ev['Descripción'],ev['Organizador'],ev['Dirección'],ev['Provincia'],ev['Tipo_Evento']].join(' ').toLowerCase();
       if (txt.indexOf(busq) === -1) return false;
+      if (periodo && ev['periodo'] !== periodo) return false;
+      if (!mostrarPasados && ev['Fecha_Inicio']) {
+        var partes = String(ev['Fecha_Inicio']).split('/');
+        if (partes.length === 3) {
+          var fechaEv = new Date(Number(partes[2]), Number(partes[1])-1, Number(partes[0]));
+          if (fechaEv < new Date()) return false;
+  }
+}
     }
     return true;
   });
@@ -300,12 +332,16 @@ function limpiarFiltros() {
   document.getElementById('filtro-tipo').value = '';
   document.getElementById('filtro-provincia').value = '';
   document.getElementById('filtro-modalidad').value = '';
+  document.getElementById('filtro-periodo').addEventListener('change', aplicarFiltros);
+  document.getElementById('mostrar-pasados').addEventListener('change', aplicarFiltros);
   eventosFiltrados = todosLosEventos.slice();
   renderGrilla();
 }
 
 document.getElementById('busqueda').addEventListener('input', aplicarFiltros);
 document.getElementById('filtro-tipo').addEventListener('change', aplicarFiltros);
+document.getElementById('filtro-periodo').value = '';
+document.getElementById('mostrar-pasados').checked = false;
 document.getElementById('filtro-provincia').addEventListener('change', aplicarFiltros);
 document.getElementById('filtro-modalidad').addEventListener('change', aplicarFiltros);
 
