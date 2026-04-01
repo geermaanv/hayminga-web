@@ -226,7 +226,7 @@ function cargarDatos() {
       poblarProvincias();
       poblarPeriodos();
       eventosFiltrados = todosLosEventos.slice();
-      renderGrilla();
+      aplicarFiltros();
     })
     .catch(function(err) {
       console.error('Error:', err);
