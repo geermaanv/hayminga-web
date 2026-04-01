@@ -599,28 +599,33 @@ let todos = [];
 let filtrados = [];
 
 // Cargar datos
-async function cargarDatos() {
+  async function cargarDatos() {
   try {
     const resp = await fetch(API_URL);
     const text = await resp.text();
     const json = JSON.parse(text.substring(47, text.length - 2));
-    const cols = json.table.cols.map(c => c.label);
-    todos = json.table.rows
-      .filter(r => r && r.c && r.c[0])
+    const rows = json.table.rows;
+
+    // La primera fila es el header
+    const headers = rows[0].c.map(c => c ? c.v : '');
+
+    todos = rows.slice(1)
+      .filter(r => r && r.c)
       .map(r => {
         const obj = {};
-        cols.forEach((col, i) => {
+        headers.forEach((col, i) => {
           const cell = r.c[i];
           obj[col] = cell ? (cell.f || cell.v) : '';
         });
         return obj;
       })
-      .filter(e => e['Activo'] === true || e['Activo'] === 'true');
+      .filter(e => e['Activo'] === 'true' || e['Activo'] === true);
 
     poblarProvincias();
     filtrados = [...todos];
     renderGrilla();
   } catch (e) {
+    console.error(e);
     document.getElementById('grilla').innerHTML = `
       <div class="empty">
         <div class="empty-icon">🌱</div>
@@ -629,6 +634,7 @@ async function cargarDatos() {
       </div>`;
   }
 }
+
 
 function poblarProvincias() {
   const provincias = [...new Set(todos.map(e => e['Provincia']).filter(Boolean))].sort();
