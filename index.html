@@ -31,17 +31,43 @@ nav{display:flex;align-items:center;gap:20px;}
 .nav-link:hover{color:var(--tierra-claro);}
 .nav-btn{font-size:0.78rem;color:#FFFFFF;background:#C4763A;padding:0.3rem 0.8rem;border-radius:8px;text-decoration:none;font-weight:500;white-space:nowrap;}
 .nav-btn:hover{background:var(--tierra-oscuro);}
-.filtros-container{background:var(--blanco);border-bottom:1px solid var(--paja-oscuro);padding:0.85rem 1.5rem;position:sticky;top:56px;z-index:90;box-shadow:0 2px 8px var(--sombra);}
-.filtros-row{display:flex;gap:0.6rem;flex-wrap:wrap;max-width:1100px;margin:0 auto;align-items:center;}
+.filtros-container{background:var(--blanco);border-bottom:1px solid var(--paja-oscuro);padding:0.7rem 1.5rem;position:sticky;top:56px;z-index:90;box-shadow:0 2px 8px var(--sombra);}
+.filtros-inner{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:0.5rem;}
+.filtros-row1{display:flex;gap:0.6rem;align-items:center;}
+.filtros-row2{display:flex;gap:0.5rem;align-items:center;}
 .search-wrap{flex:1;min-width:180px;position:relative;}
 .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:0.4;}
-input[type="text"]{width:100%;padding:0.5rem 0.75rem 0.5rem 2.2rem;border:1.5px solid var(--paja-oscuro);border-radius:var(--radio);font-family:'DM Sans',sans-serif;font-size:0.88rem;background:var(--fondo);color:var(--texto);outline:none;}
+input[type="text"]{width:100%;padding:0.5rem 0.75rem 0.5rem 2.2rem;border:1.5px solid var(--paja-oscuro);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:0.88rem;background:var(--fondo);color:var(--texto);outline:none;}
 input[type="text"]:focus{border-color:var(--tierra);}
-select{padding:0.5rem 1.8rem 0.5rem 0.65rem;border:1.5px solid var(--paja-oscuro);border-radius:var(--radio);font-family:'DM Sans',sans-serif;font-size:0.83rem;background-color:var(--fondo);color:var(--texto);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%238B4513' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.5rem center;}
+select{padding:0.45rem 1.8rem 0.45rem 0.75rem;border:1.5px solid var(--paja-oscuro);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:0.83rem;background-color:var(--fondo);color:var(--texto);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%238B4513' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.5rem center;}
 select:focus{border-color:var(--tierra);}
-.btn-limpiar{padding:0.5rem 0.9rem;border:1.5px solid var(--paja-oscuro);border-radius:var(--radio);background:transparent;color:var(--texto-suave);font-family:'DM Sans',sans-serif;font-size:0.83rem;cursor:pointer;white-space:nowrap;}
+.btn-limpiar{padding:0.45rem 0.9rem;border:1.5px solid var(--paja-oscuro);border-radius:20px;background:transparent;color:var(--texto-suave);font-family:'DM Sans',sans-serif;font-size:0.83rem;cursor:pointer;white-space:nowrap;}
 .btn-limpiar:hover{border-color:var(--tierra);color:var(--tierra);}
-.check-pasados{display:flex;align-items:center;gap:0.4rem;font-size:0.83rem;color:var(--texto-suave);cursor:pointer;white-space:nowrap;}
+.check-pasados{display:none;}
+.chip-filtro{padding:0.42rem 0.85rem;border:1.5px solid var(--paja-oscuro);border-radius:20px;background:var(--fondo);color:var(--texto-suave);font-family:'DM Sans',sans-serif;font-size:0.83rem;cursor:pointer;white-space:nowrap;user-select:none;}
+.chip-filtro:hover{border-color:var(--tierra-claro);color:var(--tierra);}
+.chip-filtro.on{background:rgba(196,118,58,0.12);border-color:var(--tierra-claro);color:var(--tierra);}
+.divider-v{width:1px;height:20px;background:var(--paja-oscuro);flex-shrink:0;}
+.meses-fila{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;}
+.meses-fila::-webkit-scrollbar{display:none;}
+.mes{display:flex;flex-direction:column;align-items:center;border:1.5px solid var(--paja-oscuro);border-radius:10px;padding:3px 8px;cursor:pointer;flex-shrink:0;min-width:40px;user-select:none;}
+.mes:not(.sin-eventos):hover{border-color:var(--tierra-claro);}
+.mes.on{background:rgba(196,118,58,0.12);border-color:var(--tierra-claro);}
+.mes .mn{font-size:11px;font-weight:500;color:var(--texto-suave);}
+.mes .mc{font-size:10px;color:var(--texto-suave);opacity:0.5;}
+.mes.on .mn,.mes.on .mc{color:var(--tierra);}
+.mes.sin-eventos{opacity:0.35;cursor:default;}
+.btn-mob-filtros{display:none;align-items:center;gap:6px;padding:0.45rem 0.9rem;border:1.5px solid var(--paja-oscuro);border-radius:20px;background:var(--fondo);color:var(--texto-suave);font-family:'DM Sans',sans-serif;font-size:0.83rem;cursor:pointer;}
+.btn-mob-filtros.on{background:rgba(196,118,58,0.12);border-color:var(--tierra-claro);color:var(--tierra);}
+.dot-activo{width:7px;height:7px;border-radius:50%;background:var(--tierra-claro);}
+.panel-mob{display:none;flex-direction:column;gap:0.65rem;padding-top:0.55rem;border-top:1px solid var(--paja-oscuro);}
+.panel-mob.abierto{display:flex;}
+.panel-label{font-size:10px;font-weight:500;color:var(--texto-suave);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:4px;}
+.panel-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.meses-mob{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;}
+.panel-footer{display:flex;justify-content:space-between;align-items:center;}
+.btn-aplicar{padding:0.48rem 1.1rem;background:var(--tierra-claro);color:white;border:none;border-radius:20px;font-family:'DM Sans',sans-serif;font-size:0.83rem;font-weight:500;cursor:pointer;}
+@media(max-width:640px){.filtros-row2{display:none;}.btn-mob-filtros{display:flex;}}
 .conteo{max-width:1100px;margin:1.25rem auto 0.4rem;padding:0 1.5rem;font-size:0.83rem;color:var(--texto-suave);}
 .grilla{max-width:1100px;margin:0 auto;padding:0.75rem 1.5rem 3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.1rem;}
 .card{background:var(--blanco);border-radius:var(--radio);overflow:hidden;box-shadow:0 2px 8px var(--sombra);cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;border:1px solid rgba(139,69,19,0.08);display:flex;flex-direction:column;}
@@ -124,28 +150,64 @@ footer a{color:var(--tierra);text-decoration:none;}
 </header>
 
 <div class="filtros-container">
-  <div class="filtros-row">
-    <div class="search-wrap">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="busqueda" placeholder="Encontrá tu próxima minga..." autocomplete="off">
+  <div class="filtros-inner">
+
+    <!-- Fila 1: búsqueda + tipo + provincia + botón mobile -->
+    <div class="filtros-row1">
+      <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="busqueda" placeholder="Encontrá tu próxima minga..." autocomplete="off">
+      </div>
+      <select id="filtro-tipo">
+        <option value="">Todos los tipos</option>
+        <option>Curso</option><option>Taller</option><option>Minga</option>
+        <option>Charla</option><option>Evento</option><option>Residencia</option><option>Festival</option>
+      </select>
+      <select id="filtro-provincia"><option value="">Todas las provincias</option></select>
+      <button class="btn-mob-filtros" id="btn-mob" onclick="togglePanelMob()">Filtros</button>
     </div>
-    <select id="filtro-tipo">
-      <option value="">Todos los tipos</option>
-      <option>Curso</option><option>Taller</option><option>Minga</option>
-      <option>Charla</option><option>Evento</option><option>Residencia</option><option>Festival</option>
-    </select>
-    <select id="filtro-provincia"><option value="">Todas las provincias</option></select>
-    <select id="filtro-modalidad">
-      <option value="">Presencial y virtual</option>
-      <option value="false">Solo presencial</option>
-      <option value="true">Solo virtual</option>
-    </select>
-    <select id="filtro-periodo"><option value="">Todos los períodos</option></select>
-    <label class="check-pasados">
-      <input type="checkbox" id="mostrar-pasados"> Ver pasados
-    </label>
-    <button class="btn-limpiar" onclick="limpiarFiltros()">Limpiar</button>
+
+    <!-- Fila 2: modalidad + meses + limpiar (desktop) -->
+    <div class="filtros-row2">
+      <span class="chip-filtro" id="chip-presencial" onclick="toggleModal('false')">Presencial</span>
+      <span class="chip-filtro" id="chip-virtual" onclick="toggleModal('true')">Virtual</span>
+      <span class="chip-filtro" id="chip-pasados" onclick="togglePasados()">Ver pasados</span>
+      <div class="divider-v"></div>
+      <div class="meses-fila" id="meses-desktop"></div>
+      <div class="divider-v"></div>
+      <button class="btn-limpiar" onclick="limpiarFiltros()">Limpiar</button>
+    </div>
+
+    <!-- Panel mobile (oculto por defecto) -->
+    <div class="panel-mob" id="panel-mob">
+      <div>
+        <div class="panel-label">Modalidad</div>
+        <div class="panel-chips">
+          <span class="chip-filtro" id="chip-presencial-mob" onclick="toggleModal('false')">Presencial</span>
+          <span class="chip-filtro" id="chip-virtual-mob" onclick="toggleModal('true')">Virtual</span>
+        </div>
+      </div>
+      <div>
+        <div class="panel-label">Período</div>
+        <div class="meses-mob" id="meses-mobile"></div>
+      </div>
+      <div>
+        <div class="panel-label">Otros</div>
+        <div class="panel-chips">
+          <span class="chip-filtro" id="chip-pasados-mob" onclick="togglePasados()">Ver pasados</span>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <button class="btn-limpiar" onclick="limpiarFiltros()">Limpiar</button>
+        <button class="btn-aplicar" onclick="togglePanelMob()">Ver resultados</button>
+      </div>
+    </div>
+
   </div>
+  <!-- inputs ocultos para compatibilidad con lógica JS existente -->
+  <input type="hidden" id="filtro-modalidad" value="">
+  <input type="hidden" id="filtro-periodo" value="">
+  <label class="check-pasados"><input type="checkbox" id="mostrar-pasados"></label>
 </div>
 
 <div class="conteo" id="conteo"></div>
@@ -260,18 +322,91 @@ function poblarProvincias() {
 }
 
 function poblarPeriodos() {
-  var periodos = [];
+  // Contar eventos por mes (formato YYYY-MM)
+  var conteo = {};
   todosLosEventos.forEach(function(ev) {
     var p = ev['Periodo'];
-    if (p && p !== 'null' && p !== '' && periodos.indexOf(p) === -1) periodos.push(p);
+    if (p && p !== 'null' && p !== '') conteo[p] = (conteo[p] || 0) + 1;
   });
-  periodos.sort().reverse();
-  var sel = document.getElementById('filtro-periodo');
-  periodos.forEach(function(p) {
-    var opt = document.createElement('option');
-    opt.value = p; opt.textContent = p;
-    sel.appendChild(opt);
+  var nombres = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var anio = new Date().getFullYear();
+  var meses = [];
+  for (var m = 1; m <= 12; m++) {
+    var key = anio + '-' + String(m).padStart(2,'0');
+    meses.push({ key: key, label: nombres[m-1], n: conteo[key] || 0 });
+  }
+  function mesHTML(m, idSuffix) {
+    var cls = 'mes' + (m.n === 0 ? ' sin-eventos' : '');
+    var onclick = m.n > 0 ? ' onclick="seleccionarMes('' + m.key + '',this)"' : '';
+    return '<div class="' + cls + '" id="mes-' + idSuffix + '-' + m.key + '"' + onclick + '>'
+      + '<span class="mn">' + m.label + '</span>'
+      + '<span class="mc">' + (m.n > 0 ? m.n : '—') + '</span></div>';
+  }
+  var desktop = document.getElementById('meses-desktop');
+  var mobile = document.getElementById('meses-mobile');
+  if (desktop) desktop.innerHTML = meses.map(function(m){ return mesHTML(m,'d'); }).join('');
+  if (mobile) mobile.innerHTML = meses.map(function(m){ return mesHTML(m,'m'); }).join('');
+}
+
+function seleccionarMes(key, el) {
+  var hidden = document.getElementById('filtro-periodo');
+  var yaActivo = hidden.value === key;
+  // limpiar todos los chips de mes
+  document.querySelectorAll('.mes').forEach(function(m){ m.classList.remove('on'); });
+  if (yaActivo) {
+    hidden.value = '';
+  } else {
+    hidden.value = key;
+    // marcar ambas versiones (desktop y mobile)
+    document.querySelectorAll('[id^="mes-d-' + key + '"],[id^="mes-m-' + key + '"]').forEach(function(m){ m.classList.add('on'); });
+  }
+  actualizarBtnMob();
+  aplicarFiltros();
+}
+
+function toggleModal(val) {
+  var hidden = document.getElementById('filtro-modalidad');
+  var yaActivo = hidden.value === val;
+  hidden.value = yaActivo ? '' : val;
+  // sincronizar chips desktop y mobile
+  ['chip-presencial','chip-presencial-mob'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('on', hidden.value === 'false');
   });
+  ['chip-virtual','chip-virtual-mob'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('on', hidden.value === 'true');
+  });
+  actualizarBtnMob();
+  aplicarFiltros();
+}
+
+function togglePasados() {
+  var chk = document.getElementById('mostrar-pasados');
+  chk.checked = !chk.checked;
+  ['chip-pasados','chip-pasados-mob'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('on', chk.checked);
+  });
+  actualizarBtnMob();
+  aplicarFiltros();
+}
+
+function togglePanelMob() {
+  var panel = document.getElementById('panel-mob');
+  var btn = document.getElementById('btn-mob');
+  panel.classList.toggle('abierto');
+}
+
+function actualizarBtnMob() {
+  var btn = document.getElementById('btn-mob');
+  if (!btn) return;
+  var modal = document.getElementById('filtro-modalidad').value;
+  var periodo = document.getElementById('filtro-periodo').value;
+  var pasados = document.getElementById('mostrar-pasados').checked;
+  var n = (modal ? 1 : 0) + (periodo ? 1 : 0) + (pasados ? 1 : 0);
+  btn.classList.toggle('on', n > 0);
+  btn.textContent = n > 0 ? 'Filtros (' + n + ')' : 'Filtros';
 }
 
 function aplicarFiltros() {
@@ -314,6 +449,8 @@ function limpiarFiltros() {
   document.getElementById('filtro-periodo').value = '';
   document.getElementById('filtro-modalidad').value = '';
   document.getElementById('mostrar-pasados').checked = false;
+  document.querySelectorAll('.chip-filtro,.mes').forEach(function(el){ el.classList.remove('on'); });
+  actualizarBtnMob();
   eventosFiltrados = todosLosEventos.slice();
   renderGrilla();
 }
@@ -321,9 +458,6 @@ function limpiarFiltros() {
 document.getElementById('busqueda').addEventListener('input', aplicarFiltros);
 document.getElementById('filtro-tipo').addEventListener('change', aplicarFiltros);
 document.getElementById('filtro-provincia').addEventListener('change', aplicarFiltros);
-document.getElementById('filtro-periodo').addEventListener('change', aplicarFiltros);
-document.getElementById('filtro-modalidad').addEventListener('change', aplicarFiltros);
-document.getElementById('mostrar-pasados').addEventListener('change', aplicarFiltros);
 
 function formatFecha(f) {
   if (!f) return null;
