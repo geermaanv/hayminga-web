@@ -47,6 +47,15 @@ select:focus{border-color:var(--tierra);}
 .chip-filtro{padding:0.42rem 0.85rem;border:1.5px solid var(--paja-oscuro);border-radius:20px;background:var(--fondo);color:var(--texto-suave);font-family:'DM Sans',sans-serif;font-size:0.83rem;cursor:pointer;white-space:nowrap;user-select:none;}
 .chip-filtro:hover{border-color:var(--tierra-claro);color:var(--tierra);}
 .chip-filtro.on{background:rgba(196,118,58,0.12);border-color:var(--tierra-claro);color:var(--tierra);}
+.modal-toggle{display:inline-flex;align-items:center;border:1.5px solid var(--paja-oscuro);border-radius:20px;overflow:hidden;background:var(--fondo);cursor:pointer;user-select:none;}
+.modal-toggle-inner{display:flex;align-items:center;gap:6px;padding:0.42rem 0.9rem;font-size:0.83rem;color:var(--texto-suave);font-family:'DM Sans',sans-serif;transition:background 0.15s,color 0.15s;}
+.modal-toggle.presencial{border-color:var(--tierra-claro);}
+.modal-toggle.presencial .modal-toggle-inner{background:rgba(196,118,58,0.12);color:var(--tierra);}
+.modal-toggle.virtual{border-color:var(--tierra);}
+.modal-toggle.virtual .modal-toggle-inner{background:rgba(139,69,19,0.1);color:var(--tierra-oscuro);}
+.modal-dot{width:8px;height:8px;border-radius:50%;background:var(--paja-oscuro);flex-shrink:0;}
+.modal-toggle.presencial .modal-dot{background:var(--tierra-claro);}
+.modal-toggle.virtual .modal-dot{background:var(--tierra-oscuro);}
 .divider-v{width:1px;height:20px;background:var(--paja-oscuro);flex-shrink:0;}
 .meses-fila{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;}
 .meses-fila::-webkit-scrollbar{display:none;}
@@ -57,6 +66,8 @@ select:focus{border-color:var(--tierra);}
 .mes .mc{font-size:10px;color:var(--texto-suave);opacity:0.5;}
 .mes.on .mn,.mes.on .mc{color:var(--tierra);}
 .mes.sin-eventos{opacity:0.35;cursor:default;}
+.mes.actual{border-color:var(--tierra-claro);}
+.mes.actual .mn{color:var(--tierra);}
 .btn-mob-filtros{display:none;align-items:center;gap:6px;padding:0.45rem 0.9rem;border:1.5px solid var(--paja-oscuro);border-radius:20px;background:var(--fondo);color:var(--texto-suave);font-family:'DM Sans',sans-serif;font-size:0.83rem;cursor:pointer;}
 .btn-mob-filtros.on{background:rgba(196,118,58,0.12);border-color:var(--tierra-claro);color:var(--tierra);}
 .dot-activo{width:7px;height:7px;border-radius:50%;background:var(--tierra-claro);}
@@ -192,19 +203,17 @@ footer a{color:var(--tierra);text-decoration:none;}
     <div>
       <div class="panel-label">Modalidad</div>
       <div class="panel-chips">
-        <span class="chip-filtro" id="chip-presencial-mob" onclick="toggleModal('false')">Presencial</span>
-        <span class="chip-filtro" id="chip-virtual-mob" onclick="toggleModal('true')">Virtual</span>
+        <div class="modal-toggle" id="modal-toggle-mob" onclick="ciclarModal()">
+          <div class="modal-toggle-inner" id="modal-toggle-inner-mob">
+            <div class="modal-dot"></div>
+            <span id="modal-toggle-label-mob">Presencial y Virtual</span>
+          </div>
+        </div>
       </div>
     </div>
     <div>
       <div class="panel-label">Período</div>
       <div class="meses-mob" id="meses-mobile"></div>
-    </div>
-    <div>
-      <div class="panel-label">Otros</div>
-      <div class="panel-chips">
-        <span class="chip-filtro" id="chip-pasados-mob" onclick="togglePasados()">Ver pasados</span>
-      </div>
     </div>
     <div class="panel-footer">
       <button class="btn-limpiar" onclick="limpiarFiltros()">Limpiar</button>
@@ -332,14 +341,15 @@ function poblarPeriodos() {
     if (p && p !== 'null' && p !== '') conteo[p] = (conteo[p] || 0) + 1;
   });
   var nombres = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  var anio = new Date().getFullYear();
+  var hoy = new Date();
   var meses = [];
-  for (var m = 1; m <= 12; m++) {
-    var key = anio + '-' + String(m).padStart(2,'0');
-    meses.push({ key: key, label: nombres[m-1], n: conteo[key] || 0 });
+  for (var delta = -3; delta <= 8; delta++) {
+    var d = new Date(hoy.getFullYear(), hoy.getMonth() + delta, 1);
+    var key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    meses.push({ key: key, label: nombres[d.getMonth()], n: conteo[key] || 0, actual: delta === 0 });
   }
   function mesHTML(m, idSuffix) {
-    var cls = 'mes' + (m.n === 0 ? ' sin-eventos' : '');
+    var cls = 'mes' + (m.n === 0 ? ' sin-eventos' : '') + (m.actual ? ' actual' : '');
     var onclick = m.n > 0 ? ' onclick="seleccionarMes(\'' + m.key + '\',this)"' : '';
     return '<div class="' + cls + '" id="mes-' + idSuffix + '-' + m.key + '"' + onclick + '>'
       + '<span class="mn">' + m.label + '</span>'
@@ -367,29 +377,30 @@ function seleccionarMes(key, el) {
   aplicarFiltros();
 }
 
-function toggleModal(val) {
-  var hidden = document.getElementById('filtro-modalidad');
-  var yaActivo = hidden.value === val;
-  hidden.value = yaActivo ? '' : val;
-  // sincronizar chips desktop y mobile
-  ['chip-presencial','chip-presencial-mob'].forEach(function(id){
-    var el = document.getElementById(id);
-    if (el) el.classList.toggle('on', hidden.value === 'false');
-  });
-  ['chip-virtual','chip-virtual-mob'].forEach(function(id){
-    var el = document.getElementById(id);
-    if (el) el.classList.toggle('on', hidden.value === 'true');
-  });
-  actualizarBtnMob();
-  aplicarFiltros();
-}
+var MODAL_ESTADOS = ['','false','true'];
+var MODAL_LABELS  = ['Presencial y Virtual','Presencial','Virtual'];
+var MODAL_CLASES  = ['','presencial','virtual'];
+var MODAL_ICONOS  = [
+  '<div class="modal-dot"></div>',
+  '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+];
+var modalIdx = 0;
 
-function togglePasados() {
-  var chk = document.getElementById('mostrar-pasados');
-  chk.checked = !chk.checked;
-  ['chip-pasados','chip-pasados-mob'].forEach(function(id){
-    var el = document.getElementById(id);
-    if (el) el.classList.toggle('on', chk.checked);
+function ciclarModal() {
+  modalIdx = (modalIdx + 1) % 3;
+  document.getElementById('filtro-modalidad').value = MODAL_ESTADOS[modalIdx];
+  ['modal-toggle','modal-toggle-mob'].forEach(function(id){
+    var tog = document.getElementById(id);
+    if (!tog) return;
+    MODAL_CLASES.forEach(function(c){ if(c) tog.classList.remove(c); });
+    if (MODAL_CLASES[modalIdx]) tog.classList.add(MODAL_CLASES[modalIdx]);
+  });
+  ['modal-toggle-inner','modal-toggle-inner-mob'].forEach(function(id){
+    var inner = document.getElementById(id);
+    if (!inner) return;
+    var labelId = id === 'modal-toggle-inner' ? 'modal-toggle-label' : 'modal-toggle-label-mob';
+    inner.innerHTML = MODAL_ICONOS[modalIdx] + '<span id="' + labelId + '">' + MODAL_LABELS[modalIdx] + '</span>';
   });
   actualizarBtnMob();
   aplicarFiltros();
@@ -456,6 +467,18 @@ function limpiarFiltros() {
   document.getElementById('filtro-modalidad').value = '';
   document.getElementById('mostrar-pasados').checked = false;
   document.querySelectorAll('.chip-filtro,.mes').forEach(function(el){ el.classList.remove('on'); });
+  modalIdx = 0;
+  ['modal-toggle','modal-toggle-mob'].forEach(function(id){
+    var tog = document.getElementById(id);
+    if (!tog) return;
+    MODAL_CLASES.forEach(function(c){ if(c) tog.classList.remove(c); });
+  });
+  ['modal-toggle-inner','modal-toggle-inner-mob'].forEach(function(id){
+    var inner = document.getElementById(id);
+    if (!inner) return;
+    var labelId = id === 'modal-toggle-inner' ? 'modal-toggle-label' : 'modal-toggle-label-mob';
+    inner.innerHTML = MODAL_ICONOS[0] + '<span id="' + labelId + '">' + MODAL_LABELS[0] + '</span>';
+  });
   actualizarBtnMob();
   eventosFiltrados = todosLosEventos.slice();
   renderGrilla();
