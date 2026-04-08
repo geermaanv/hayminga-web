@@ -60,8 +60,9 @@ select:focus{border-color:var(--tierra);}
 .btn-mob-filtros{display:none;align-items:center;gap:6px;padding:0.45rem 0.9rem;border:1.5px solid var(--paja-oscuro);border-radius:20px;background:var(--fondo);color:var(--texto-suave);font-family:'DM Sans',sans-serif;font-size:0.83rem;cursor:pointer;}
 .btn-mob-filtros.on{background:rgba(196,118,58,0.12);border-color:var(--tierra-claro);color:var(--tierra);}
 .dot-activo{width:7px;height:7px;border-radius:50%;background:var(--tierra-claro);}
-.panel-mob{display:none;flex-direction:column;gap:0.65rem;padding-top:0.55rem;border-top:1px solid var(--paja-oscuro);}
+.panel-mob{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(42,26,10,0.5);z-index:150;align-items:flex-end;}
 .panel-mob.abierto{display:flex;}
+.panel-mob-inner{background:var(--blanco);width:100%;border-radius:16px 16px 0 0;padding:1.25rem 1.25rem 2rem;display:flex;flex-direction:column;gap:0.7rem;max-height:80vh;overflow-y:auto;}
 .panel-label{font-size:10px;font-weight:500;color:var(--texto-suave);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:4px;}
 .panel-chips{display:flex;gap:6px;flex-wrap:wrap;}
 .meses-mob{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;}
@@ -178,36 +179,38 @@ footer a{color:var(--tierra);text-decoration:none;}
       <button class="btn-limpiar" onclick="limpiarFiltros()">Limpiar</button>
     </div>
 
-    <!-- Panel mobile (oculto por defecto) -->
-    <div class="panel-mob" id="panel-mob">
-      <div>
-        <div class="panel-label">Modalidad</div>
-        <div class="panel-chips">
-          <span class="chip-filtro" id="chip-presencial-mob" onclick="toggleModal('false')">Presencial</span>
-          <span class="chip-filtro" id="chip-virtual-mob" onclick="toggleModal('true')">Virtual</span>
-        </div>
-      </div>
-      <div>
-        <div class="panel-label">Período</div>
-        <div class="meses-mob" id="meses-mobile"></div>
-      </div>
-      <div>
-        <div class="panel-label">Otros</div>
-        <div class="panel-chips">
-          <span class="chip-filtro" id="chip-pasados-mob" onclick="togglePasados()">Ver pasados</span>
-        </div>
-      </div>
-      <div class="panel-footer">
-        <button class="btn-limpiar" onclick="limpiarFiltros()">Limpiar</button>
-        <button class="btn-aplicar" onclick="togglePanelMob()">Ver resultados</button>
-      </div>
-    </div>
-
   </div>
   <!-- inputs ocultos para compatibilidad con lógica JS existente -->
   <input type="hidden" id="filtro-modalidad" value="">
   <input type="hidden" id="filtro-periodo" value="">
   <label class="check-pasados"><input type="checkbox" id="mostrar-pasados"></label>
+</div>
+
+<!-- Panel mobile como overlay -->
+<div class="panel-mob" id="panel-mob" onclick="cerrarPanelMobOverlay(event)">
+  <div class="panel-mob-inner">
+    <div>
+      <div class="panel-label">Modalidad</div>
+      <div class="panel-chips">
+        <span class="chip-filtro" id="chip-presencial-mob" onclick="toggleModal('false')">Presencial</span>
+        <span class="chip-filtro" id="chip-virtual-mob" onclick="toggleModal('true')">Virtual</span>
+      </div>
+    </div>
+    <div>
+      <div class="panel-label">Período</div>
+      <div class="meses-mob" id="meses-mobile"></div>
+    </div>
+    <div>
+      <div class="panel-label">Otros</div>
+      <div class="panel-chips">
+        <span class="chip-filtro" id="chip-pasados-mob" onclick="togglePasados()">Ver pasados</span>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button class="btn-limpiar" onclick="limpiarFiltros()">Limpiar</button>
+      <button class="btn-aplicar" onclick="togglePanelMob()">Ver resultados</button>
+    </div>
+  </div>
 </div>
 
 <div class="conteo" id="conteo"></div>
@@ -337,7 +340,7 @@ function poblarPeriodos() {
   }
   function mesHTML(m, idSuffix) {
     var cls = 'mes' + (m.n === 0 ? ' sin-eventos' : '');
-    var onclick = m.n > 0 ? ' onclick="seleccionarMes('' + m.key + '',this)"' : '';
+    var onclick = m.n > 0 ? ' onclick="seleccionarMes(\'' + m.key + '\',this)"' : '';
     return '<div class="' + cls + '" id="mes-' + idSuffix + '-' + m.key + '"' + onclick + '>'
       + '<span class="mn">' + m.label + '</span>'
       + '<span class="mc">' + (m.n > 0 ? m.n : '—') + '</span></div>';
@@ -394,8 +397,11 @@ function togglePasados() {
 
 function togglePanelMob() {
   var panel = document.getElementById('panel-mob');
-  var btn = document.getElementById('btn-mob');
   panel.classList.toggle('abierto');
+  document.body.style.overflow = panel.classList.contains('abierto') ? 'hidden' : '';
+}
+function cerrarPanelMobOverlay(e) {
+  if (e.target === document.getElementById('panel-mob')) togglePanelMob();
 }
 
 function actualizarBtnMob() {
@@ -593,6 +599,7 @@ document.addEventListener('keydown', function(ev) {
   if (ev.key === 'Escape') {
     document.getElementById('modal-overlay').classList.remove('activo');
     document.getElementById('popup-overlay').classList.remove('activo');
+    document.getElementById('panel-mob').classList.remove('abierto');
     document.body.style.overflow = '';
   }
 });
