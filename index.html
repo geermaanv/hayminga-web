@@ -83,11 +83,9 @@ select:focus{border-color:var(--tierra);}
   .filtros-row2{display:none;}
   .btn-mob-filtros{display:flex;}
   .nav-link{display:none;}
-  .filtros-row1{flex-wrap:wrap;gap:0.5rem;}
-  .search-wrap{width:100%;min-width:0;order:1;}
-  #filtro-tipo{flex:1;min-width:0;order:2;font-size:0.78rem;}
-  #filtro-provincia{flex:1;min-width:0;order:3;font-size:0.78rem;}
-  .btn-mob-filtros{order:4;margin-left:auto;}
+  .filtros-row1{gap:0.5rem;}
+  #filtro-tipo{display:none;}
+  #filtro-provincia{display:none;}
 }
 .conteo{max-width:1100px;margin:1.25rem auto 0.4rem;padding:0 1.5rem;font-size:0.83rem;color:var(--texto-suave);}
 .grilla{max-width:1100px;margin:0 auto;padding:0.75rem 1.5rem 3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.1rem;}
@@ -213,6 +211,23 @@ footer a{color:var(--tierra);text-decoration:none;}
 <div class="panel-mob" id="panel-mob" onclick="cerrarPanelMobOverlay(event)">
   <div class="panel-mob-inner">
     <div>
+      <div class="panel-label">Tipo de evento</div>
+      <div class="panel-chips">
+        <span class="chip-filtro" id="mob-tipo-all" onclick="setTipoMob('')">Todos</span>
+        <span class="chip-filtro" id="mob-tipo-curso" onclick="setTipoMob('Curso')">Curso</span>
+        <span class="chip-filtro" id="mob-tipo-taller" onclick="setTipoMob('Taller')">Taller</span>
+        <span class="chip-filtro" id="mob-tipo-minga" onclick="setTipoMob('Minga')">Minga</span>
+        <span class="chip-filtro" id="mob-tipo-charla" onclick="setTipoMob('Charla')">Charla</span>
+        <span class="chip-filtro" id="mob-tipo-evento" onclick="setTipoMob('Evento')">Evento</span>
+        <span class="chip-filtro" id="mob-tipo-residencia" onclick="setTipoMob('Residencia')">Residencia</span>
+        <span class="chip-filtro" id="mob-tipo-festival" onclick="setTipoMob('Festival')">Festival</span>
+      </div>
+    </div>
+    <div>
+      <div class="panel-label">Provincia</div>
+      <div class="panel-chips" id="mob-provincias"></div>
+    </div>
+    <div>
       <div class="panel-label">Modalidad</div>
       <div class="panel-chips">
         <div class="modal-toggle" id="modal-toggle-mob" onclick="ciclarModal()">
@@ -319,6 +334,7 @@ function cargarDatos() {
         })
         .filter(function(ev) { return ev['Activo'] === 'true' || ev['Activo'] === true; });
       poblarProvincias();
+      poblarProvinciasMob();
       poblarPeriodos();
       eventosFiltrados = todosLosEventos.slice();
       aplicarFiltros();
@@ -389,6 +405,42 @@ function seleccionarMes(key, el) {
   aplicarFiltros();
 }
 
+function setTipoMob(val) {
+  document.getElementById('filtro-tipo').value = val;
+  document.querySelectorAll('[id^="mob-tipo-"]').forEach(function(el){ el.classList.remove('on'); });
+  var id = val ? 'mob-tipo-' + val.toLowerCase() : 'mob-tipo-all';
+  var el = document.getElementById(id);
+  if (el) el.classList.add('on');
+  actualizarBtnMob();
+  aplicarFiltros();
+}
+
+function poblarProvinciasMob() {
+  var container = document.getElementById('mob-provincias');
+  if (!container) return;
+  var provincias = [];
+  todosLosEventos.forEach(function(ev) {
+    var p = ev['Provincia'];
+    if (p && p !== 'null' && p !== '' && provincias.indexOf(p) === -1) provincias.push(p);
+  });
+  provincias.sort();
+  var html = '<span class="chip-filtro on" id="mob-prov-all" onclick="setProvMob('')">Todas</span>';
+  provincias.forEach(function(p) {
+    html += '<span class="chip-filtro" id="mob-prov-' + p.replace(/\s/g,'-') + '" onclick="setProvMob('' + p + '')">' + p + '</span>';
+  });
+  container.innerHTML = html;
+}
+
+function setProvMob(val) {
+  document.getElementById('filtro-provincia').value = val;
+  document.querySelectorAll('[id^="mob-prov-"]').forEach(function(el){ el.classList.remove('on'); });
+  var id = val ? 'mob-prov-' + val.replace(/\s/g,'-') : 'mob-prov-all';
+  var el = document.getElementById(id);
+  if (el) el.classList.add('on');
+  actualizarBtnMob();
+  aplicarFiltros();
+}
+
 var MODAL_ESTADOS = ['','false','true'];
 var MODAL_LABELS  = ['Presencial y Virtual','Presencial','Virtual'];
 var MODAL_CLASES  = ['','presencial','virtual'];
@@ -433,7 +485,9 @@ function actualizarBtnMob() {
   var modal = document.getElementById('filtro-modalidad').value;
   var periodo = document.getElementById('filtro-periodo').value;
   var pasados = document.getElementById('mostrar-pasados').checked;
-  var n = (modal ? 1 : 0) + (periodo ? 1 : 0) + (pasados ? 1 : 0);
+  var tipo = document.getElementById('filtro-tipo').value;
+  var prov = document.getElementById('filtro-provincia').value;
+  var n = (modal ? 1 : 0) + (periodo ? 1 : 0) + (pasados ? 1 : 0) + (tipo ? 1 : 0) + (prov ? 1 : 0);
   btn.classList.toggle('on', n > 0);
   btn.textContent = n > 0 ? 'Filtros (' + n + ')' : 'Filtros';
 }
@@ -479,6 +533,10 @@ function limpiarFiltros() {
   document.getElementById('filtro-modalidad').value = '';
   document.getElementById('mostrar-pasados').checked = false;
   document.querySelectorAll('.chip-filtro,.mes').forEach(function(el){ el.classList.remove('on'); });
+  var allTipo = document.getElementById('mob-tipo-all');
+  if (allTipo) allTipo.classList.add('on');
+  var allProv = document.getElementById('mob-prov-all');
+  if (allProv) allProv.classList.add('on');
   modalIdx = 0;
   ['modal-toggle','modal-toggle-mob'].forEach(function(id){
     var tog = document.getElementById(id);
