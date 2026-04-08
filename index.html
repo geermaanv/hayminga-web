@@ -47,7 +47,7 @@ select:focus{border-color:var(--tierra);}
 .chip-filtro{padding:0.42rem 0.85rem;border:1.5px solid var(--paja-oscuro);border-radius:20px;background:var(--fondo);color:var(--texto-suave);font-family:'DM Sans',sans-serif;font-size:0.83rem;cursor:pointer;white-space:nowrap;user-select:none;}
 .chip-filtro:hover{border-color:var(--tierra-claro);color:var(--tierra);}
 .chip-filtro.on{background:rgba(196,118,58,0.12);border-color:var(--tierra-claro);color:var(--tierra);}
-.modal-toggle{display:inline-flex;align-items:center;border:1.5px solid var(--paja-oscuro);border-radius:20px;overflow:hidden;background:var(--fondo);cursor:pointer;user-select:none;}
+.modal-toggle{display:inline-flex;align-items:center;border:1.5px solid var(--paja-oscuro);border-radius:20px;overflow:hidden;background:var(--fondo);cursor:pointer;user-select:none;min-width:170px;}
 .modal-toggle-inner{display:flex;align-items:center;gap:6px;padding:0.42rem 0.9rem;font-size:0.83rem;color:var(--texto-suave);font-family:'DM Sans',sans-serif;transition:background 0.15s,color 0.15s;}
 .modal-toggle.presencial{border-color:var(--tierra-claro);}
 .modal-toggle.presencial .modal-toggle-inner{background:rgba(196,118,58,0.12);color:var(--tierra);}
@@ -181,9 +181,12 @@ footer a{color:var(--tierra);text-decoration:none;}
 
     <!-- Fila 2: modalidad + meses + limpiar (desktop) -->
     <div class="filtros-row2">
-      <span class="chip-filtro" id="chip-presencial" onclick="toggleModal('false')">Presencial</span>
-      <span class="chip-filtro" id="chip-virtual" onclick="toggleModal('true')">Virtual</span>
-      <span class="chip-filtro" id="chip-pasados" onclick="togglePasados()">Ver pasados</span>
+      <div class="modal-toggle" id="modal-toggle" onclick="ciclarModal()">
+        <div class="modal-toggle-inner" id="modal-toggle-inner">
+          <div class="modal-dot"></div>
+          <span id="modal-toggle-label">Presencial y Virtual</span>
+        </div>
+      </div>
       <div class="divider-v"></div>
       <div class="meses-fila" id="meses-desktop"></div>
       <div class="divider-v"></div>
