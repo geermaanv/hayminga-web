@@ -424,11 +424,14 @@ function poblarProvinciasMob() {
     if (p && p !== 'null' && p !== '' && provincias.indexOf(p) === -1) provincias.push(p);
   });
   provincias.sort();
-  var html = '<span class="chip-filtro on" id="mob-prov-all" onclick="setProvMob(\'\')">Todas</span>';
+  var html = '<span class="chip-filtro on" id="mob-prov-all" data-prov="">Todas</span>';
   provincias.forEach(function(p) {
-    html += '<span class="chip-filtro" id="mob-prov-' + p.replace(/\s/g,'-') + '" onclick="setProvMob(\'' + p + '\')">'+p+'</span>';
+    html += '<span class="chip-filtro" data-prov="' + p + '">' + p + '</span>';
   });
   container.innerHTML = html;
+  container.querySelectorAll('[data-prov]').forEach(function(el) {
+    el.addEventListener('click', function() { setProvMob(this.dataset.prov); });
+  });
 }
 
 function setProvMob(val) {
